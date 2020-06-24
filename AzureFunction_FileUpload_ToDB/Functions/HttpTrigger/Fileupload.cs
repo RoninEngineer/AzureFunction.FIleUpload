@@ -5,6 +5,8 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using System.Web.Http;
+using System;
 
 namespace AzureFunction_FileUpload_ToDB
 {
@@ -19,13 +21,23 @@ namespace AzureFunction_FileUpload_ToDB
         [FunctionName("FileUpload")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log)
         {
-            var response = await _fileUploadEngine.IsMultipartContent(req);
-            if(response)
+            try
             {
-                
+                var response = await _fileUploadEngine.IsMultipartContent(req);
+                if (response)
+                {
+                    
+                }
+                return (ActionResult)new OkObjectResult(response);
             }
+            catch (Exception)
+            {
 
-            return (ActionResult)new OkObjectResult(response);
+                return (ActionResult)new InternalServerErrorResult();
+            }
+            
+
+           
         }
     }
 }
