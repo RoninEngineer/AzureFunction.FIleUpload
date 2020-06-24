@@ -1,4 +1,5 @@
-﻿using AzureFunction.Engine.Attributes;
+﻿using AzureFunction.Data.Interface;
+using AzureFunction.Engine.Attributes;
 using AzureFunction.Engine.Interface;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -8,6 +9,13 @@ namespace AzureFunction.Engine.Engine
 {
     public class FileUploadEngine : IFileUploadEngine
     {
+        private readonly IFileUploadRepository _fileImportRepo;
+
+        public FileUploadEngine(IFileUploadRepository fileImportRepo)
+        {
+            _fileImportRepo = fileImportRepo;
+        }
+
         public async Task<bool> IsMultipartContent(HttpRequest request)
         {
             try
@@ -26,6 +34,12 @@ namespace AzureFunction.Engine.Engine
             {
                 throw;
             }
+        }
+
+        public async Task<string> ValidateImportDataRequest(HttpRequest request)
+        {
+            var response = await _fileImportRepo.GetMultipartReader(request);
+            return "true";
         }
     }
 }
