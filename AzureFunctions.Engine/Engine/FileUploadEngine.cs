@@ -2,6 +2,7 @@
 using AzureFunction.Engine.Attributes;
 using AzureFunction.Engine.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Threading.Tasks;
 
@@ -36,10 +37,10 @@ namespace AzureFunction.Engine.Engine
             }
         }
 
-        public async Task<string> ValidateImportDataRequest(HttpRequest request)
+        public async Task<MultipartReader> ValidateImportDataRequest(HttpRequest request)
         {
-            var response = await _fileImportRepo.GetMultipartReader(request);
-            return "true";
+            var reader = await _fileImportRepo.GetMultipartReader(request);
+            return reader;
         }
     }
 }
